@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Montgomery's Ladder</title>
+
+    <link rel="stylesheet" href="reveal.js/dist/reset.css">
+    <link rel="stylesheet" href="reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="reveal.js/dist/theme/moon.css">
+
+    <!-- Theme used for syntax highlighted code -->
+    <link rel="stylesheet" href="reveal.js/plugin/highlight/monokai.css">
+
+    <style>
+      td.valign {
+        vertical-align: top;
+      }
+    </style>
+
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <!-- Title page -->
+        <section data-markdown>
+          <textarea data-template>
+          ## Montgomery's Ladder
+
+          Side-channel attacks and defenses on elliptic curve scalar
+          multiplication
+          </textarea>
+        </section>
+
+        <section>
+          <section>
+            <h2>Peter Montgomery (1947-2020)</h2>
+
+            <div>
+              <img src="img/petmon-sn-2007.jpg" alt="petmon 2007" width="60%" />
+            </div>
+            
+            Peter and I, summer 2007, Redmond, WA
+          </section>
+        </section>
+
+
+    <script src="reveal.js/dist/reveal.js"></script>
+    <script src="reveal.js/plugin/notes/notes.js"></script>
+    <script src="reveal.js/plugin/markdown/markdown.js"></script>
+    <script src="reveal.js/plugin/highlight/highlight.js"></script>
+    <script>
+      // More info about initialization & config:
+      // - https://revealjs.com/initialization/
+      // - https://revealjs.com/config/
+      Reveal.initialize({
+        hash: true,
+        center: true,
+
+        // Learn about plugins: https://revealjs.com/plugins/
+        plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+      });
+    </script>
+  </body>
+</html>
