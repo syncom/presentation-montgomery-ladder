@@ -35,7 +35,42 @@
 
         <section>
           <section>
-            <h2>ECDSA: Sign With Private Key</h2>
+            <h2>ECDSA: Sign</h2>
+            <p style="font-size: 0.8em;">
+            \[\begin{aligned}
+            \textrm{Secret info} &amp; : \textrm{private key } d; \textrm{nonce } k; d, k \in \{1, \ldots, n-1 \} \\
+            \textrm{Public info} &amp; : \textrm{curve } E(\mathbb{F}_q); \textrm{base point } G \in E(\mathbb{F}_q), |G|=n; \\
+                                    &amp; ~  \textrm{public key } [d]G; \textrm{hash function } h(\cdot) \\
+            \textrm{Message } &amp; : m \\
+            \textrm{Signature } &amp; : (r, s)
+            \end{aligned} \]
+            </p>
+            <p style="font-size: 0.8em;" class="fragment fade-up">
+            \[\begin{aligned}
+            r &amp; = ([k] G)_x \mod n \\
+            s &amp; = (h(m) + d r) k^{-1} \mod n 
+            \end{aligned} \]
+            </p>
+          </section>
+        </section>
+
+
+        <section>
+          <section>
+            <h2>ECDSA: Nonce Must Be Secured</h2>
+            <p style="font-size: 0.8em;">
+              \[\begin{aligned}
+              r &amp; = ([k] G)_x \mod n \\
+              s &amp; = (h(m) + d r) k^{-1} \mod n 
+              \end{aligned} \]
+              \[
+              \textrm{Knowledge of nonce } k \implies \textrm{Knowledge of private key } d \\
+              \]
+            <p style="font-size: 0.8em;" class="fragment fade-up">
+              \[
+              d = (s k - h(m)) r^{-1} \mod n
+              \]
+            </p>
           </section>
         </section>
 
@@ -87,7 +122,7 @@
               <img src="img/petmon-sn-2007.jpg" alt="petmon 2007" width="60%" />
             </div>
             
-            Peter and I, summer 2007, Redmond, WA
+            Peter and me, summer 2007, Redmond, WA
           </section>
         </section>
 
@@ -96,6 +131,7 @@
     <script src="reveal.js/plugin/notes/notes.js"></script>
     <script src="reveal.js/plugin/markdown/markdown.js"></script>
     <script src="reveal.js/plugin/highlight/highlight.js"></script>
+    <script src="reveal.js/plugin/math/math.js"></script>
     <script>
       // More info about initialization & config:
       // - https://revealjs.com/initialization/
@@ -105,7 +141,7 @@
         center: true,
 
         // Learn about plugins: https://revealjs.com/plugins/
-        plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+        plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX ]
       });
     </script>
   </body>
