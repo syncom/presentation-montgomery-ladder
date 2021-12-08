@@ -76,13 +76,104 @@
 
         <section>
           <section>
-            <h2>Elliptic Curve Scalar Multiplication: Double and add</h2>
+            <h3>Elliptic Curve Scalar Multiplication: Double and add</h3>
+
+            \[
+            \textrm{Efficient algorithm to compute } [k] G
+            \]
+
+            <table style="width: 100%">
+              <colgroup>
+                <col span="1" style="width: 60%;">
+                <col span="1" style="width: 50%">
+              </colgroup>
+
+              <tbody>
+                <tr>
+                  <td class="valign">
+                    <pre><code data-trim data-noescape>
+                      # MSB to LSB
+                      let bits = bit_repr(k)
+                      let res = ponit_at_infinity
+                     
+                      for bit in bits:
+                          res = res + res # double
+                          if bit == 1:            
+                              res = res + G # add
+                          i = i - 1 # move to right
+                      return res
+                    </code></pre>
+                  </td>
+
+                  <td>
+                    <p style="font-size: 0.6em;" class="fragment fade-up">
+                      \[
+                      \textrm{Example: } k = 25 = (11001)_2, G = 3
+                      \]
+                    </p>
+
+                    <p style="font-size: 0.6em;" class="fragment fade-up">
+                      \[
+                      \textrm{Start with } res = 0 \\
+                      ~\\
+                      \begin{matrix}
+                      (i)   & 4 & 3 & 2 & 1 & 0 \\
+                      (n_i) & 1 & 1 & 0 & 0 & 1 \\
+                      (res) & 3 & 9 & 18 & 36 & 75
+                      \end{matrix}\]
+
+                    </p>
+
+                  </td>
+                </tr>
+              </tbody>
+              </table>
           </section>
         </section>
 
         <section>
           <section>
-            <h2>Information Leak in Double and add</h2>
+            <h2>Doubld And Add Leaks Information</h2>
+            <p class="r-fit-text">
+            Point addition and doubling take different CPU cycles
+            </p>
+
+            In affine coordinates (one representation of points)
+            \[\begin{aligned}
+            P + Q & : I + 2M + S \\
+            [2] P = P + P & : I + 2M + 2S
+            \end{aligned}\]
+
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h3>Double and Add Leaks Information</h3>
+
+            <table style="width: 100%">
+              <tbody>
+                <tr>
+                  <td class="valign">
+                    <pre><code data-trim data-noescape>
+                      let bits = bit_repr(k)
+                      let res = ponit_at_infinity
+                     
+                      for bit in bits:
+                          res = res + res # double
+                          if bit == 1:            
+                              res = res + G # add
+                          i = i - 1 # move to right
+                      return res
+                    </code></pre>
+                  </td>
+                  </tr>
+              </tbody>
+            </table>
+
+            <img src="img/spa-daa.png" alt="Simple Power Analysis" style="width: 80%;" />
+            <br />
+            <a href="https://cosade.telecom-paristech.fr/presentations/s2_p2.pdf" style="font-size: 00.3em;">reference [pg 11]</a>
           </section>
         </section>
 
