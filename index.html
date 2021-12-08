@@ -38,17 +38,17 @@
             <h2>ECDSA: Sign</h2>
             <p style="font-size: 0.8em;">
             \[\begin{aligned}
-            \textrm{Secret info} &amp; : \textrm{private key } d; \textrm{nonce } k; d, k \in \{1, \ldots, n-1 \} \\
-            \textrm{Public info} &amp; : \textrm{curve } E(\mathbb{F}_q); \textrm{base point } G \in E(\mathbb{F}_q), |G|=n; \\
-                                    &amp; ~  \textrm{public key } [d]G; \textrm{hash function } h(\cdot) \\
-            \textrm{Message } &amp; : m \\
-            \textrm{Signature } &amp; : (r, s)
+            \textrm{Secret info} & : \textrm{private key } \textcolor{red}{d}; \textrm{nonce } \textcolor{red}{k}~(0 < d, k < n) \\
+            \textrm{Public info} & : \textrm{curve } E(\mathbb{F}_q); \textrm{base point } G \in E(\mathbb{F}_q), |G|=n; \\
+                                    & ~  \textrm{public key } [d]G; \textrm{hash function } h(\cdot) \\
+            \textrm{Message } & : m \\
+            \textrm{Signature } & : (r, s)
             \end{aligned} \]
             </p>
             <p style="font-size: 0.8em;" class="fragment fade-up">
             \[\begin{aligned}
-            r &amp; = ([k] G)_x \mod n \\
-            s &amp; = (h(m) + d r) k^{-1} \mod n 
+            r & = (\colorbox{blue}{[k] G})_x \mod n \\
+            s & = (h(m) + d r) k^{-1} \mod n 
             \end{aligned} \]
             </p>
           </section>
@@ -60,8 +60,8 @@
             <h2>ECDSA: Nonce Must Be Secured</h2>
             <p style="font-size: 0.8em;">
               \[\begin{aligned}
-              r &amp; = ([k] G)_x \mod n \\
-              s &amp; = (h(m) + d r) k^{-1} \mod n 
+              r & = ([\textcolor{red}{k}] G)_x \mod n \\
+              s & = (h(m) + \textcolor{red}{d} r) \textcolor{red}{k}^{-1} \mod n 
               \end{aligned} \]
               \[
               \textrm{Knowledge of nonce } k \implies \textrm{Knowledge of private key } d \\
@@ -84,7 +84,7 @@
 
             <table style="width: 100%">
               <colgroup>
-                <col span="1" style="width: 60%;">
+                <col span="1" style="width: 50%;">
                 <col span="1" style="width: 50%">
               </colgroup>
 
@@ -97,10 +97,10 @@
                       let res = ponit_at_infinity
                      
                       for bit in bits:
-                          res = res + res # double
-                          if bit == 1:            
-                              res = res + G # add
-                          i = i - 1 # move to right
+                        res = res + res # double
+                        if bit == 1:            
+                          res = res + G # add
+                        i = i - 1 # move right
                       return res
                     </code></pre>
                   </td>
@@ -117,9 +117,9 @@
                       \textrm{Start with } res = 0 \\
                       ~\\
                       \begin{matrix}
-                      (i)   & 4 & 3 & 2 & 1 & 0 \\
-                      (n_i) & 1 & 1 & 0 & 0 & 1 \\
-                      (res) & 3 & 9 & 18 & 36 & 75
+                      (i)   &   & 4 & 3 & 2 & 1 & 0 \\
+                      (k_i) &   & 1 & 1 & 0 & 0 & 1 \\
+                      (res) & 0 & 3 & 9 & 18 & 36 & \color{red}{75}
                       \end{matrix}\]
 
                     </p>
@@ -160,10 +160,10 @@
                       let res = ponit_at_infinity
                      
                       for bit in bits:
-                          res = res + res # double
-                          if bit == 1:            
-                              res = res + G # add
-                          i = i - 1 # move to right
+                        res = res + res # double
+                        if bit == 1:            
+                          res = res + G # add
+                        i = i - 1 # move right
                       return res
                     </code></pre>
                   </td>
@@ -179,13 +179,88 @@
 
         <section>
           <section>
-            <h2>Scalar Multiplication: Montgomery's Ladder</h2>
+            <h3>Scalar Multiplication: Montgomery's Ladder</h3>
+            <p style="font-size: 0.6em;">
+              Peter L. Montgomery. Speeding the Pollard and elliptic curve
+              methods of factorization. 1987. (<a href="./petmon-1987.pdf">Full
+              paper</a>)
+            </p>
+
+            <img src="img/montgomery-ladder-orig.png" alt="Montgomery's ladder, original woroding" />
           </section>
         </section>
 
         <section>
           <section>
-            <h2>The Devil Is In Implementation</h2>
+            <h3>Scalar Multiplication: Montgomery's Ladder</h3>
+
+            \[
+            \textrm{Compute } [k] G, \textrm{thwarting SPA}
+            \]
+
+            <table style="width: 100%">
+              <colgroup>
+                <col span="1" style="width: 50%;">
+                <col span="1" style="width: 50%">
+              </colgroup>
+
+              <tbody>
+                <tr>
+                  <td class="valign">
+                    <pre><code data-trim data-noescape>
+                      # MSB to LSB
+                      let bits = bit_repr(k)
+                      let R0 = ponit_at_infinity
+                      let R1 = G
+
+                      for bit in bits:
+                        if bit == 0:
+                          R1 = R0 + R1
+                          R0 = R0 + R0
+                        else:
+                          R0 = R1 + R0
+                          R1 = R1 + R1
+                        i = i - 1 # move right
+                      return R0
+                    </code></pre>
+                  </td>
+
+                  <td>
+                    <p style="font-size: 0.6em;" class="fragment fade-up">
+                      \[
+                      \textrm{Example: } k = 25 = (11001)_2, G = 3
+                      \]
+                    </p>
+
+                    <p style="font-size: 0.6em;" class="fragment fade-up">
+                      \[
+                      \textrm{Start with } R0 = 0, R1 = 3 \\
+                      ~\\
+                      \begin{matrix}
+                      (i)   &   & 4 & 3  & 2  & 1  & 0  \\
+                      (k_i) &   & 1 & 1  & 0  & 0  & 1  \\
+                      (R0)  & 0 & 3 & 9  & 18 & 36 & \color{red}{75} \\
+                      (R1)  & 3 & 6 & 12 & 21 & 39 & 78
+                      \end{matrix}\]
+
+                    </p>
+
+                  </td>
+                </tr>
+              </tbody>
+              </table>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h1 class="r-fit-text">The Devil Is In The Implementation</h1>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h2 >The Devil Is In The Implementation</h2>
 
             BBB's attack
           </section>
