@@ -30,6 +30,8 @@
 
           Side-channel attacks and defenses on elliptic curve scalar
           multiplication
+
+          @syncom
           </textarea>
         </section>
 
@@ -393,15 +395,14 @@
         <section>
           <section>
             <h2>Summary</h2>
-            Constant-time implementation of Montgomery's ladder protected
-            against timing attacks must satisfy
+            Implementation of Montgomery's ladder protected against timing
+            attacks must satisfy
             <ol>
               <li>The group law must be evaluated in the same order independent
               of the bits of the scalar</li>
               <li>The number of loop iterations must be fixed</li>
               <li>Memory operations must not depend on bits of the secret
               scalar</li>
-              <li></li>
             </ol>
 
 
