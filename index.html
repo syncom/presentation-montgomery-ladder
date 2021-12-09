@@ -181,8 +181,8 @@
           <section>
             <h3>Scalar Multiplication: Montgomery's Ladder</h3>
             <p style="font-size: 0.6em;">
-              Peter L. Montgomery. Speeding the Pollard and elliptic curve
-              methods of factorization. 1987. (<a href="./petmon-1987.pdf">Full
+              Speeding the Pollard and elliptic curve methods of factorization
+              by Peter L. Montgomery, 1987. (<a href="./petmon-1987.pdf">Full
               paper</a>)
             </p>
 
@@ -260,23 +260,90 @@
 
         <section>
           <section>
-            <h2 >The Devil Is In The Implementation</h2>
-
-            BBB's attack
+            <h2 >Leaking A Few Nonce Bits</h2>
+            <img src="img/openssl-0.9.8o_ec2_mult.png" alt="Nonce bits leakage
+            in OpenSSL 0.9.8o" style="width: 90%;" />
+            <div style="font-size: 0.4em;">
+              Montgomery's ladder scalar multiplication for curves over binary
+              fields as implemented in OpenSSL 0.9.8o at crypto/ec/ec2_mult.c
+            </div>
           </section>
         </section>
 
         <section>
           <section>
-            <h2>The Devil Is In Implementation</h2>
+            <h2>Remote Timing Attack</h2>
+
+            <ul>
+              <li>Collect certain amount of (message, signature) pairs</li>
+              <li>Use timing leak to filter signatures with leading 0-bit runs
+              than a fixed threshold</li>
+              <li>Create a system of linear equations using filtered pairs</li>
+              <li>Try solving the system to recover a single nonce using the LLL
+              algorithm</li>
+              <li>Use the nonce to recover private key</li>
+            </ul>
+            <p style="font-size: 0.3em; text-align: left;">References: <br />
+              <a href="https://eprint.iacr.org/2011/232.pdf">Remote Timing
+              Attacks Are Still Practical</a> by Billy B. Brumley and Nicola
+              Tuveri, 2011 <br />
+              <a
+              href="https://www.hpl.hp.com/techreports/1999/HPL-1999-90.pdf">Lattice
+              Attacks on Digital Signature Schemes</a> by Nick A.
+              Howgrave-Graham and Nigel P. Smart, 2001
+            </p>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h2>Mitigations</h2>
+            <ul>
+              <li>
+                Blinding: Brumley and Tuveri's <a
+                href="https://github.com/openssl/openssl/commit/1e368ab08fccdb824cb91bd7765880de0dbf2ea8">fix
+                in OpenSSL </a>
+                \[ \textrm{Compute equivalent }
+                [\tilde{k}] G \textrm{, where}
+                \]
+
+                \[
+                \tilde{k} = \begin{cases}
+                k + 2n & \text{if } \lceil\lg(k+n)\rceil = \lceil\lg n\rceil \\
+                k + n  & \text{otherwise}
+                \end{cases}\]
+              </li>
+              <li>
+                <a
+                href="https://datatracker.ietf.org/doc/html/rfc6979#section-3.2">RFC6979</a>:
+                Deterministic Usage of the Digital Signature Algorithm (DSA) and
+                Elliptic Curve Digital Signature Algorithm (ECDSA): cf. Section 3.2
+              </li>
+            </ul>
+          </section>
+        </section>
+        <section>
+          <section>
+            <h2>Leaking Secret Bits from Branching Conditions</h2>
             Flush and reload attack
           </section>
         </section>
 
         <section>
           <section>
-            <h2>Secure Implementation of Scalar Multiplication</h2>
+            <h2>Countermeasures</h2>
             Three conditions
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h2>Food For Thought</h2>
+            <ul>
+              <li>Does subzero leak? (cf. <a
+              href="https://github.com/square/subzero/blob/e0f77891b9eb9ff46e377345e64baa970da2b353/core/trezor-crypto/ecdsa.c#L419">trezor-crypto/ecdsa.c</a>)</li>
+              <li>How much should we be worried?</li>
+            </ul>
           </section>
         </section>
 
@@ -288,7 +355,7 @@
               <img src="img/petmon-sn-2007.jpg" alt="petmon 2007" width="60%" />
             </div>
             
-            Peter and me, summer 2007, Redmond, WA
+            Summer 2007, Redmond, WA
           </section>
         </section>
 
