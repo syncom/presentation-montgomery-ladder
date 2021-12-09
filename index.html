@@ -179,6 +179,17 @@
 
         <section>
           <section>
+            <h2>Peter Montgomery (1947-2020)</h2>
+
+            <div>
+              <img src="img/petmon-sn-2007.jpg" alt="petmon 2007" width="60%" />
+            </div>
+            Summer 2007, Redmond, WA
+          </section>
+        </section>
+
+        <section>
+          <section>
             <h3>Scalar Multiplication: Montgomery's Ladder</h3>
             <p style="font-size: 0.6em;">
               Speeding the Pollard and elliptic curve methods of factorization
@@ -242,9 +253,7 @@
                       (R0)  & 0 & 3 & 9  & 18 & 36 & \color{red}{75} \\
                       (R1)  & 3 & 6 & 12 & 21 & 39 & 78
                       \end{matrix}\]
-
                     </p>
-
                   </td>
                 </tr>
               </tbody>
@@ -324,18 +333,80 @@
         </section>
         <section>
           <section>
-            <h2>Leaking Secret Bits from Branching Conditions</h2>
-            Flush and reload attack
+            <h3>Leaking Secret Bits from Branching Conditions</h3>
+            <img src="img/openssl-0.9.8o_ec2_mult_2.png" alt="Nonce bits leakage
+            in OpenSSL 0.9.8o" style="width: 90%;" />
+            <div style="font-size: 0.4em;">
+              Montgomery's ladder scalar multiplication for curves over binary
+              fields as implemented in OpenSSL 0.9.8o at crypto/ec/ec2_mult.c
+            </div>
           </section>
         </section>
 
         <section>
           <section>
-            <h2>Countermeasures</h2>
-            Three conditions
+            <h2>Cache-Timing Attack: Flush+Reload</h2>
+            <ul>
+              <li>
+                Local attack exploiting a weakness in processor architecture
+                (X86): shared cache lines between processes
+              </li>
+              <li>
+                FLUSH+RELOAD method allows a spy process to figure out which
+                branch is taken through cache-timing leaks
+              </li>
+              <li>
+                Branching condition uniquely determines a bit in secret nonce
+              </li>
+            </ul>
+
+            <p style="font-size: 0.3em; text-align: left;">References: <br />
+              <a
+              href="https://eprint.iacr.org/2014/140.pdf">Recovering OpenSSL
+              ECDSA Nonces Using the FLUSH+RELOAD Cache Side-channel Attack</a>
+              by Yuval Yarom and Naomi Benger, 2014
+              <a href="https://www.daemonology.net/papers/htt.pdf">Cache
+              Missing For Fun and Profit</a> by Colin Percival, 2005 <br />
+            </p>
           </section>
         </section>
 
+        <section>
+          <section>
+            <h2>Mitigations</h2>
+            <ul>
+              <li>
+                Code-level: Prevent data flow from secrets to branching
+                condidtions. <br />
+                Yarom and Benger's <a
+                href="https://github.com/openssl/openssl/commit/fff69a7d8c38b5a391e7d71b0b51999003dd1e8f?diff=split">fix
+                in OpenSSL</a>
+              </li>
+              <li>
+                Processor architecture and OS level (and maybe app store level?):
+                Restrict ability to flush specific memory lines from cache
+              </li>
+            </ul>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h2>Summary</h2>
+            Constant-time implementation of Montgomery's ladder protected
+            against timing attacks must satisfy
+            <ol>
+              <li>The group law must be evaluated in the same order independent
+              of the bits of the scalar</li>
+              <li>The number of loop iterations must be fixed</li>
+              <li>Memory operations must not depend on bits of the secret
+              scalar</li>
+              <li></li>
+            </ol>
+
+
+          </section>
+        </section>
         <section>
           <section>
             <h2>Food For Thought</h2>
@@ -344,18 +415,6 @@
               href="https://github.com/square/subzero/blob/e0f77891b9eb9ff46e377345e64baa970da2b353/core/trezor-crypto/ecdsa.c#L419">trezor-crypto/ecdsa.c</a>)</li>
               <li>How much should we be worried?</li>
             </ul>
-          </section>
-        </section>
-
-        <section>
-          <section>
-            <h2>Peter Montgomery (1947-2020)</h2>
-
-            <div>
-              <img src="img/petmon-sn-2007.jpg" alt="petmon 2007" width="60%" />
-            </div>
-            
-            Summer 2007, Redmond, WA
           </section>
         </section>
 
